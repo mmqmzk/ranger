@@ -179,7 +179,7 @@ handle_extension() {
       view_tsv
       ;;
     class)
-      view_class
+      view_class 2> /dev/null
       exit 1;;
     ini|properties|cnf)
       check_highlight_size
@@ -348,7 +348,7 @@ handle_image() {
 
 check_highlight_size() {
   if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
-  exit 2
+    exit 2
   fi
 }
 
@@ -429,7 +429,7 @@ handle_mime() {
       7z l -- "${FILE_PATH}" && exit 5
       exit 1;;
     application/x-java-applet)
-      view_class && exit 5
+      view_class 2> /dev/null && exit 5
       exit 1;;
   esac
 }
