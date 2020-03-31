@@ -199,6 +199,11 @@ handle_extension() {
       highlight -S bash "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
       pygmentize -l bash "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
       ;;
+    vimrc|.vimrc|.viminfo)
+      check_highlight_size
+      highlight -S vim "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      pygmentize -l vim "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      ;;
   esac
 }
 
