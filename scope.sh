@@ -31,7 +31,7 @@ IFS=$'\n'
 FILE_PATH="${1}"         # Full path of the highlighted file
 PV_WIDTH="${2}"          # Width of the preview pane (number of fitting characters)
 ## shellcheck disable=SC2034 # PV_HEIGHT is provided for convenience and unused
-PV_HEIGHT="${3}"         # Height of the preview pane (number of fitting characters)
+# PV_HEIGHT="${3}"         # Height of the preview pane (number of fitting characters)
 IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 PV_IMAGE_ENABLED="${5}"  # 'True' if image previews are enabled, 'False' otherwise.
 
@@ -56,8 +56,8 @@ HIGHLIGHT_OPTIONS=("--replace-tabs=${HIGHLIGHT_TABWIDTH}" "--style=${HIGHLIGHT_S
 PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-autumn}
 PYGMENTIZE_OPTIONS=("-f" "${PYGMENTIZE_FORMAT}" "-O" "style=${PYGMENTIZE_STYLE}")
 
-OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
-OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
+# OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
+# OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 
 view_image() {
   convert "${FILE_PATH}" "${IMAGE_CACHE_PATH}" && img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 4
@@ -115,7 +115,7 @@ handle_extension() {
       ## Avoid password prompt by providing empty password
       unrar lt -p- -- "${FILE_PATH}" && exit 5
       exit 1;;
-    7z|jar|apk|war|msi|iso)
+    7z|apk|msi|iso)
       ## Avoid password prompt by providing empty password
       7z l -p -- "${FILE_PATH}" && exit 5
       exit 1;;
@@ -152,9 +152,10 @@ handle_extension() {
       pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
       ;;
     md|markdown)
-      pandoc -t html "${FILE_PATH}" | elinks -dump -dump-color-mode 1 -force-html && exit 5
+      mdv -c "$PV_WIDTH" "${FILE_PATH}" && exit 5
+      # pandoc -t html "${FILE_PATH}" | elinks -dump -dump-color-mode 1 -force-html && exit 5
       ;;
-    epub|tex|org|md|markdown)
+    epub|tex|org)
       pandoc -t plain "${FILE_PATH}" && exit 5
       ;;
     db|sqlite|db-wal|sqlite-wal|db-shm|sqlite-shm)
@@ -193,7 +194,7 @@ handle_extension() {
   esac
 
   case "$(basename "$FILE_PATH")" in
-    *bashrc|*zshrc|*profile|*zprofile|*bash_logout|*zlogout|\
+    *bashrc|*zshrc|*profile|*bash_logout|*zlogout|\
       *bash_login|*zlogin|.bash_history|.zsh_history)
       check_highlight_size
       highlight -S bash "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
@@ -212,7 +213,7 @@ handle_image() {
   ## rendered from vector graphics. If the conversion program allows
   ## specifying only one dimension while keeping the aspect ratio, the width
   ## will be used.
-  local DEFAULT_SIZE="1920x1080"
+  # local DEFAULT_SIZE="1920x1080"
 
   local mimetype="${1}"
   case "${mimetype}" in
