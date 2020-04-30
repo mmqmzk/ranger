@@ -152,8 +152,8 @@ handle_extension() {
       pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
       ;;
     md|markdown)
-      mdv -c "$PV_WIDTH" "${FILE_PATH}" && exit 5
-      # pandoc -t html "${FILE_PATH}" | elinks -dump -dump-color-mode 1 -force-html && exit 5
+      # mdv -c "$PV_WIDTH" "${FILE_PATH}" && exit 5
+      pandoc -t html "${FILE_PATH}" | elinks -dump -dump-color-mode 1 -force-html && exit 5
       ;;
     epub|tex|org)
       pandoc -t plain "${FILE_PATH}" && exit 5
