@@ -31,7 +31,7 @@ IFS=$'\n'
 FILE_PATH="${1}"         # Full path of the highlighted file
 PV_WIDTH="${2}"          # Width of the preview pane (number of fitting characters)
 ## shellcheck disable=SC2034 # PV_HEIGHT is provided for convenience and unused
-# PV_HEIGHT="${3}"         # Height of the preview pane (number of fitting characters)
+# PV_HEIGHT="${3}"       # Height of the preview pane (number of fitting characters)
 IMAGE_CACHE_PATH="${4}"  # Full path that should be used to cache image preview
 PV_IMAGE_ENABLED="${5}"  # 'True' if image previews are enabled, 'False' otherwise.
 
@@ -49,11 +49,11 @@ else
   PYGMENTIZE_FORMAT='terminal'
   HIGHLIGHT_FORMAT='ansi'
 fi
-HIGHLIGHT_OPTIONS=("--replace-tabs=${HIGHLIGHT_TABWIDTH}" "--style=${HIGHLIGHT_STYLE}"\
-  "--out-format=${HIGHLIGHT_FORMAT}" "--force")
+HIGHLIGHT_OPTIONS=("--replace-tabs=${HIGHLIGHT_TABWIDTH}" \
+  "--style=${HIGHLIGHT_STYLE}" "--out-format=${HIGHLIGHT_FORMAT}" "--force")
 
 
-PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-autumn}
+PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-monokai}
 PYGMENTIZE_OPTIONS=("-f" "${PYGMENTIZE_FORMAT}" "-O" "style=${PYGMENTIZE_STYLE}")
 
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
@@ -184,8 +184,8 @@ handle_extension() {
       exit 1;;
     ini|properties|cnf)
       check_highlight_size
-      highlight -S ini "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
-      pygmentize -l ini "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight -S ini "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize -l ini "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       ;;
     dff|dsf|wv|wvc)
       mediainfo "${FILE_PATH}" && exit 5
@@ -197,13 +197,13 @@ handle_extension() {
     *bashrc|*zshrc|*profile|*bash_logout|*zlogout|\
       *bash_login|*zlogin|.bash_history|.zsh_history)
       check_highlight_size
-      highlight -S bash "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
-      pygmentize -l bash "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight -S bash "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize -l bash "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       ;;
     vimrc|.vimrc|.viminfo)
       check_highlight_size
-      highlight -S vim "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
-      pygmentize -l vim "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight -S vim "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize -l vim "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       ;;
   esac
 }
@@ -369,13 +369,13 @@ handle_mime() {
       exit 2;;
     */xml)
       check_highlight_size
-      highlight -S xml "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
-      pygmentize -l xml "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight -S xml "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize -l xml "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       exit 2;;
     text/*|application/x-wine-extension-ini)
       check_highlight_size
-      highlight "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
-      pygmentize "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       exit 2;;
 
     ## Image
@@ -401,7 +401,8 @@ handle_mime() {
       view_sqlite3
       exit 1;;
     application/json)
-      highlight -S json "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" && exit 5
+      highlight -S json "${HIGHLIGHT_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
+      pygmentize -l json "${PYGMENTIZE_OPTIONS[@]}" -- "${FILE_PATH}" 2>/dev/null && exit 5
       exit 1;;
     application/msword)
       view_doc
