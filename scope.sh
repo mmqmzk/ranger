@@ -153,6 +153,7 @@ handle_extension() {
       ;;
     md|markdown)
       # mdv -c "$PV_WIDTH" "${FILE_PATH}" && exit 5
+      glow "$FILE_PATH" -s dark && exit 5
       pandoc -t html "${FILE_PATH}" | elinks -dump -dump-color-mode 1 -force-html && exit 5
       ;;
     epub|tex|org)
