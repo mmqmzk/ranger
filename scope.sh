@@ -108,8 +108,9 @@ handle_extension() {
     ## Archive
     a|ace|alz|arc|arj|bz|bz2|cab|cpio|deb|gz|jar|lha|lz|lzh|lzma|lzo|\
     rpm|rz|t7z|tar|tbz|tbz2|tgz|tlz|txz|tZ|tzo|war|xpi|xz|Z|zip)
-      atool --list -- "${FILE_PATH}" && exit 5
-      bsdtar --list --file "${FILE_PATH}" && exit 5
+      atool --list -- "${FILE_PATH}" 2>/dev/null && exit 5
+      tar --list --file "${FILE_PATH}" 2>/dev/null && exit 5
+      (zcat "${FILE_PATH}" | head -n 1000) 2>/dev/null && exit 5
       exit 1;;
     rar)
       ## Avoid password prompt by providing empty password
@@ -426,6 +427,7 @@ handle_mime() {
       application/x-gzip|\
       application/x-tar)
       atool --list -- "${FILE_PATH}" && exit 5;
+      (zcat "${FILE_PATH}" | head -n 1000) && exit 5
       exit 1;;
     application/x-rar)
       unrar lt -p- -- "${FILE_PATH}" && exit 5
