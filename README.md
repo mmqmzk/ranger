@@ -1,13 +1,9 @@
 ## Setup:
 
 ```bash
-pushd /tmp
-rm -rf ranger_devicons
-git clone https://github.com/alexanderjeurissen/ranger_devicons.git
-pushd ranger_devicons
-make install
-popd
-rm -rf ranger_devicons
+pushd "$HOME/.config/ranger"
+git submodule sync
+git submodule update --init
 popd
 
 sudo apt update && sudo apt install -y transmission-cli mediainfo \
