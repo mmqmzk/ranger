@@ -60,12 +60,21 @@ PYGMENTIZE_OPTIONS=("-f" "${PYGMENTIZE_FORMAT}" "-O" "style=${PYGMENTIZE_STYLE}"
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 
 view_image() {
-  convert "${FILE_PATH}" "${IMAGE_CACHE_PATH}" && img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 4
+  convert "${FILE_PATH}" "${IMAGE_CACHE_PATH}"
+  local CAT_IMG="${ZSH:-"$HOME/.dotfiles/oh-my-zsh"}/plugins/catimg/catimg.sh"
+  if [[ -f "${CAT_IMG}" ]]; then
+    zsh "${CAT_IMG}" "${IMAGE_CACHE_PATH}" && exit 4
+  fi
+  img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 4
 }
 
 view_icon() {
-  convert "${FILE_PATH}[0]" "${IMAGE_CACHE_PATH}" && img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 5
-  convert "${FILE_PATH}" "${IMAGE_CACHE_PATH}" && img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 5
+  convert "${FILE_PATH}[0]" "${IMAGE_CACHE_PATH}" || convert "${FILE_PATH}" "${IMAGE_CACHE_PATH}"
+  local CAT_IMG="${ZSH:-"$HOME/.dotfiles/oh-my-zsh"}/plugins/catimg/catimg.sh"
+  if [[ -f "${CAT_IMG}" ]]; then
+    zsh "${CAT_IMG}" "${IMAGE_CACHE_PATH}" && exit 5
+  fi
+  img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${IMAGE_CACHE_PATH}" && exit 5
 }
 
 view_sqlite3() {
@@ -389,6 +398,7 @@ handle_mime() {
       exit 1;;
     image/*)
       ## Preview as text conversion
+      view_image
       img2txt --gamma=0.6 --width="${PV_WIDTH}" -- "${FILE_PATH}" && exit 4
       exiftool "${FILE_PATH}" && exit 2
       exit 1;;
